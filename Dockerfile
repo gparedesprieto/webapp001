@@ -1,29 +1,38 @@
 FROM node:18-alpine AS builder
 WORKDIR /app
-
 COPY package*.json ./
 RUN npm ci
-
 COPY . .
 RUN npm run build
 
-# Debug: Verificar que out/ se generó correctamente
-RUN echo "=== Checking build output ==="
-RUN ls -la /app/
-RUN echo "=== Checking out directory ==="
-RUN ls -la /app/out/ || echo "ERROR: out directory not found!"
-RUN echo "=== Checking index.html ==="
-RUN cat /app/out/index.html | head -10 || echo "ERROR: index.html not found!"
-
 FROM nginx:alpine
+
+# ✅ OBLIGATORIO: Agregar USER ID entre 10000-20000
+RUN addgroup -g 10001 choreo && adduser -D -s /bin/sh -u 10001 -G choreo choreo
 
 COPY --from=builder /app/out /usr/share/nginx/html/
 
-# Debug: Verificar que los archivos se copiaron a nginx
-RUN echo "=== Checking nginx html directory ==="
-RUN ls -la /usr/share/nginx/html/
-RUN echo "=== Checking index.html in nginx ==="
-RUN cat /usr/share/nginx/html/index.html | head -10 || echo "ERROR: index.html not copied!"
+# Configurar nginx para el usuario
+RUN chown -R 10001:10001 /usr/share/nginx/html
+RUN chown -R 10001:10001 /var/cache/nginx
+RUN chown -R 10001:10001 /var/log/nginx
+RUN chown -R 10001:10001 /etc/nginx/conf.d
+RUN touch /var/run/nginx.pid
+RUN chown -R 10001:10001 /var/run/nginx.pid
 
-EXPOSE 80
+# Configuración nginx mejorada
+RUN echo 'server { \
+    listen 8080; \
+    server_name localhost; \
+    root /usr/share/nginx/html; \
+    index index.html; \
+    location / { \
+        try_files $uri $uri/ /index.html; \
+    } \
+}' > /etc/nginx/conf.d/default.conf
+
+# ✅ OBLIGATORIO: Especificar USER
+USER 10001
+
+EXPOSE 8080
 CMD ["nginx", "-g", "daemon off;"]
