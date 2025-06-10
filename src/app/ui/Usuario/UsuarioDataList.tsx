@@ -239,6 +239,12 @@ const UsuarioDataList = ({ triggerReload, valueFiltro, onSeleccionUsuario }: Usu
       />
 
       <button
+        onClick={() => actionEditarUsuario(null)}
+        className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+      >
+        Nuevo
+      </button>
+      <button
         onClick={() => actionEvaluar('A')}
         className="bg-white text-gray-800 px-4 py-2 rounded border border-gray-300 hover:bg-gray-100"
       >

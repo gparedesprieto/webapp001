@@ -46,11 +46,6 @@ export default function Home() {
         
       <main className="w-full flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
 
-        {
-/*
-        
-*/
-        }
         
         <UsuarioFilter onFiltro={handleFiltro} />
         <UsuarioForm isOpen={mostrarModal} onUsuarioCreado={handleUsuarioCreado} usuario={usuarioSeleccionado} />

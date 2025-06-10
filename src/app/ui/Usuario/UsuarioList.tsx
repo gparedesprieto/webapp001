@@ -359,9 +359,6 @@ export default function UsuariosList({ triggerReload, valueFiltro, onSeleccionUs
     */
   }
 
-  
-
-
   return (
     <div className="w-full">
       {/*
