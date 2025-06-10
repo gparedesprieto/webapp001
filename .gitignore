@@ -40,4 +40,4 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-echo "src/app/api/usuarios/" >> .gitignore
+echo "src/___app/api/usuarios/" >> .gitignore
